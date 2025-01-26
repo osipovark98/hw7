@@ -136,7 +136,7 @@ export const getUsersService = {
       if (isEmailUnique && isLoginUnique) {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
-        const isConfirmed = false;
+        const isConfirmed = true;
         const userViewWithoutIdObject: Omit<UserViewModel, "id"> = {
           ...rest,
           createdAt: new Date().toISOString(),
