@@ -283,6 +283,7 @@ export const getAuthService = {
     }
     const mongoUser = await getAuthRepository.findUserByEmail(emailValue);
     if (!mongoUser) {
+      console.log(1);
       responseCode = HTTP_CODES.BAD_REQUEST_400;
       responseObject = {
         errorsMessages: [
@@ -293,6 +294,7 @@ export const getAuthService = {
         ],
       };
     } else if (mongoUser.isConfirmed) {
+      console.log(2);
       responseCode = HTTP_CODES.BAD_REQUEST_400;
       responseObject = {
         errorsMessages: [
@@ -303,6 +305,7 @@ export const getAuthService = {
         ],
       };
     } else {
+      console.log(3);
       const confirmationToken = await createConfirmationToken(mongoUser._id);
       await getAuthManager.sendRegistrationConfirmation(
         emailValue,
