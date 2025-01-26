@@ -60,8 +60,8 @@ authRouter.post(
 
 authRouter.post(
   "/registration-confirmation",
-  async (req: RequestWithQuery<ConfirmationQueryModel>, res: Response) => {
-    const response = await getAuthService.confirm(req.query);
+  async (req: RequestWithBody<ConfirmationQueryModel>, res: Response) => {
+    const response = await getAuthService.confirm(req.body);
     if (Array.isArray(response)) {
       const [responseCode, responseObject] = response;
       res.status(responseCode).json(responseObject);
