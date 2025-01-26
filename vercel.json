@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 2,
   "name": "hw7",
   "builds": [{ "src": "src/index.ts", "use": "@vercel/node" }],
   "routes": [{ "src": "/(.*)", "dest": "src/index.ts" }]
