@@ -73,7 +73,7 @@ async function createConfirmationToken(userId: ObjectId) {
   await getAuthRepository.insertConfirmationToken({
     userId,
     token: confirmationToken,
-    expirationDate: addMinutes(new Date(), 1),
+    expirationDate: addMinutes(new Date(), 5),
   });
   return confirmationToken;
 }

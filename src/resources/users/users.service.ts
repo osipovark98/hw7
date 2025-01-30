@@ -74,7 +74,7 @@ const userQuerySchema = Joi.object({
 });
 
 export const checkIfEmailIsUnique = async (email: string) => {
-  const { error, value: validatedEmail } = emailSchema.validate(email, {
+  const { error, value: validatedEmail } = userQuerySchema.validate(email, {
     abortEarly: false,
   });
   if (error) throw new Error("error");
@@ -86,7 +86,7 @@ export const checkIfEmailIsUnique = async (email: string) => {
 };
 
 export const checkIfLoginIsUnique = async (login: string) => {
-  const { error, value: validatedLogin } = loginSchema.validate(login, {
+  const { error, value: validatedLogin } = userQuerySchema.validate(login, {
     abortEarly: false,
   });
   if (error) throw new Error("error");
