@@ -37,6 +37,28 @@ export const getUsersRepository = {
     return mongoUsers;
   },
 
+  async findUsersByLogin(login: string) {
+    const mongoUsers = await client
+      .db("homework")
+      .collection<UserViewModel>("users")
+      .find({
+        login: login,
+      })
+      .toArray();
+    return mongoUsers;
+  },
+
+  async findUsersByEmail(email: string) {
+    const mongoUsers = await client
+      .db("homework")
+      .collection<UserViewModel>("users")
+      .find({
+        email: email,
+      })
+      .toArray();
+    return mongoUsers;
+  },
+
   async findMongoUserById(id: string | ObjectId) {
     const mongoUser = await client
       .db("homework")

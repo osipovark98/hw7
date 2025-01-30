@@ -24,31 +24,35 @@ import {
 import { APIErrorResult } from "../../utils/models/APIErrorResult";
 import { Paginator } from "../../utils/models/Paginator";
 
+export const emailSchema = Joi.string()
+  .trim()
+  .pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+  .required()
+  .messages({
+    "any.required": "email is required",
+    "string.base": "email must be a string",
+    "string.pattern.base": "email must match the email pattern",
+    "string.empty": "email must not be an empty string",
+  });
+
+export const loginSchema = Joi.string()
+  .trim()
+  .min(3)
+  .max(10)
+  .pattern(/^[a-zA-Z0-9_-]*$/)
+  .required()
+  .messages({
+    "any.required": "login is required",
+    "string.base": "login must be a string",
+    "string.min": "login is shorter than 3 characters",
+    "string.max": "login is longer than 10 characters",
+    "string.pattern.base": "login must match the login pattern",
+    "string.empty": "login must not be an empty string",
+  });
+
 export const userSchema = Joi.object({
-  email: Joi.string()
-    .trim()
-    .pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-    .required()
-    .messages({
-      "any.required": "value is required",
-      "string.base": "value must be a string",
-      "string.pattern.base": "value must match the email pattern",
-      "string.empty": "value must not be an empty string",
-    }),
-  login: Joi.string()
-    .trim()
-    .min(3)
-    .max(10)
-    .pattern(/^[a-zA-Z0-9_-]*$/)
-    .required()
-    .messages({
-      "any.required": "value is required",
-      "string.base": "value must be a string",
-      "string.min": "value is shorter than 3 characters",
-      "string.max": "value is longer than 10 characters",
-      "string.pattern.base": "value must match the login pattern",
-      "string.empty": "value must not be an empty string",
-    }),
+  email: emailSchema,
+  login: loginSchema,
   password: Joi.string().trim().min(6).max(20).required().messages({
     "any.required": "value is required",
     "string.base": "value must be a string",
@@ -70,27 +74,25 @@ const userQuerySchema = Joi.object({
 });
 
 export const checkIfEmailIsUnique = async (email: string) => {
-  const { error, value: validQuery } = userQuerySchema.validate(
-    { searchEmailTerm: email },
-    { abortEarly: false, stripUnknown: true }
-  );
+  const { error, value: validatedEmail } = emailSchema.validate(email, {
+    abortEarly: false,
+  });
   if (error) throw new Error("error");
   else {
     const isEmailUnique =
-      (await getUsersRepository.findUsers(validQuery, "and")).length === 0;
+      (await getUsersRepository.findUsersByEmail(validatedEmail)).length === 0;
     return isEmailUnique;
   }
 };
 
 export const checkIfLoginIsUnique = async (login: string) => {
-  const { error, value: validQuery } = userQuerySchema.validate(
-    { searchLoginTerm: login },
-    { abortEarly: false, stripUnknown: true }
-  );
+  const { error, value: validatedLogin } = loginSchema.validate(login, {
+    abortEarly: false,
+  });
   if (error) throw new Error("error");
   else {
     const isLoginUnique =
-      (await getUsersRepository.findUsers(validQuery, "and")).length === 0;
+      (await getUsersRepository.findUsersByLogin(validatedLogin)).length === 0;
     return isLoginUnique;
   }
 };

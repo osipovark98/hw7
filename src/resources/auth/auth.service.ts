@@ -23,6 +23,8 @@ import { emailAdapter } from "../../adapters/email.adapter";
 import {
   checkIfEmailIsUnique,
   checkIfLoginIsUnique,
+  emailSchema,
+  loginSchema,
   userSchema,
 } from "../users/users.service";
 
@@ -36,32 +38,6 @@ import { APIErrorResult } from "../../utils/models/APIErrorResult";
 import { UserInputModel } from "../users/models/UserInputModel";
 import { UserMongoModel } from "../users/models/UserMongoModel";
 import { UserViewModel } from "../users/models/UserViewModel";
-
-const emailSchema = Joi.string()
-  .trim()
-  .pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-  .required()
-  .messages({
-    "any.required": "email is required",
-    "string.base": "email must be a string",
-    "string.pattern.base": "email must match the email pattern",
-    "string.empty": "email must not be an empty string",
-  });
-
-const loginSchema = Joi.string()
-  .trim()
-  .min(3)
-  .max(10)
-  .pattern(/^[a-zA-Z0-9_-]*$/)
-  .required()
-  .messages({
-    "any.required": "login is required",
-    "string.base": "login must be a string",
-    "string.min": "login is shorter than 3 characters",
-    "string.max": "login is longer than 10 characters",
-    "string.pattern.base": "login must match the login pattern",
-    "string.empty": "login must not be an empty string",
-  });
 
 const passwordSchema = Joi.string().trim().min(6).max(20).required().messages({
   "any.required": "password is required",
@@ -97,7 +73,7 @@ async function createConfirmationToken(userId: ObjectId) {
   await getAuthRepository.insertConfirmationToken({
     userId,
     token: confirmationToken,
-    expirationDate: addMinutes(new Date(), 5),
+    expirationDate: addMinutes(new Date(), 1),
   });
   return confirmationToken;
 }
